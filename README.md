@@ -2,6 +2,8 @@
 
 Fictional Chat is a web application that lets you carry on conversations with your favorite fictional characters. It uses a locally hosted LLM (llama3.2) served via Ollama within Docker containers, ensuring privacy and full control over the model.
 
+![Screenshot](./images/ss.png)
+
 ## Features
 
 - **Character-based chat**: Select from predefined characters or add your own.  
