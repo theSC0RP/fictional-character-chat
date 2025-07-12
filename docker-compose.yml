@@ -1,0 +1,32 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: character-chat-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    working_dir: /app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: character-chat-frontend
+    ports:
+      - "3000:5173"
+    working_dir: /app
+    volumes:
+      # 1) Only mount your source code for hot-reload:
+      - ./frontend/src:/app/src
+      # 2) Isolate node_modules in-container so it isn’t overwritten:
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    depends_on:
+      - backend

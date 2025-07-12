@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Pipenv artifacts
+# *.lock
+# Pipfile.lock
+
+# Docker
+Dockerfile
+.dockerignore
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# OS
+.DS_Store

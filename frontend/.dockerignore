@@ -1,0 +1,19 @@
+# Node modules (never send this to Docker)
+node_modules/
+
+# Build output
+dist/
+build/
+.vite/
+.npm/
+
+# OS / IDE / Git
+.DS_Store
+.vscode/
+.idea/
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
