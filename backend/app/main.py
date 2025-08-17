@@ -1,31 +1,17 @@
-# app/main.py
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from app.chat_graph import create_chat_graph
+from app.api.chat_ws import router as chat_ws_router
+from app.api.chat_history import router as chat_history_router
 
 app = FastAPI()
 
-# Enable CORS for dev
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+  CORSMiddleware,
+  allow_origins=["*"],
+  allow_methods=["*"],
+  allow_headers=["*"],
 )
 
-class ChatRequest(BaseModel):
-    character: str
-    universe: str
-    input: str
-    messages: list[dict] = []
-
-@app.post("/chat")
-async def chat(req: ChatRequest):
-  chat_graph = create_chat_graph(req.character, req.universe)
-  print("\n\n*** \n, JSON: ", req.input, "\n\n\n")
-  result = chat_graph.invoke({"input": req.input, "messages": req.messages})
-  return {
-    "response": result["output"],
-    "messages": result["messages"]
-  }
+# Mount the chat WebSocket router
+app.include_router(chat_ws_router)
+app.include_router(chat_history_router)

@@ -1,4 +1,24 @@
 services:
+  redis:
+    image: redis:7-alpine
+    container_name: character-chat-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - backend
+
+  mongo:
+    image: mongo:6.0
+    container_name: character-chat-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - backend
+
   backend:
     build:
       context: ./backend
@@ -8,9 +28,18 @@ services:
     volumes:
       - ./backend:/app
     environment:
+      - PYTHONUNBUFFERED=1
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - REDIS_URL=redis://redis:6379/0
+      - MONGO_URL=mongodb://mongo:27017
+      - MAX_HISTORY=20 
     working_dir: /app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - redis
+      - mongo
+    networks:
+      - backend
 
   frontend:
     build:
@@ -21,12 +50,20 @@ services:
       - "3000:5173"
     working_dir: /app
     volumes:
-      # 1) Only mount your source code for hot-reload:
       - ./frontend/src:/app/src
-      # 2) Isolate node_modules in-container so it isn’t overwritten:
       - /app/node_modules
     command: npm run dev -- --host 0.0.0.0
     environment:
       CHOKIDAR_USEPOLLING: "true"
     depends_on:
       - backend
+    networks:
+      - backend
+
+volumes:
+  redis-data:
+  mongo-data:
+
+networks:
+  backend:
+    driver: bridge

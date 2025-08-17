@@ -11,6 +11,10 @@ langgraph="*"
 langchain-community="*"
 langchain-core="*"
 langchain-ollama="*"
+aioredis = "*"
+redis = "*"
+motor = "*"
+websockets = "*"
 
 [dev-packages]
 

@@ -1,81 +1,68 @@
+# backend/app/chat_graph.py
+
+import os
+from typing import List, Optional
+from pydantic import BaseModel
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langgraph.graph import StateGraph, END
 from langchain_core.runnables import RunnableLambda
-from typing import TypedDict, List
-import os
-from langchain_ollama import ChatOllama
 
 ollama_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
-llm = ChatOllama(
-  model="llama3.2",
-  base_url=ollama_url,
-  temperature=0.7
-)
-
-
-# Optional: Make these dynamic later
-character = "Yoda"
-universe = "Star Wars"
-
-
-# 1️⃣ Define the shape of the state
-class ChatState(TypedDict):
+class ChatState(BaseModel):
   input: str
   messages: List[dict]
-  output: str
+  output: Optional[str] = None  # allow initial state without output
 
 
-# 2️⃣ Define the graph
 def create_chat_graph(character: str, universe: str):
-  # LangChain prompt with dynamic character/universe + memory
+  # Prompt template with memory placeholder
   prompt = ChatPromptTemplate.from_messages([
     ("system",
       "You are roleplaying as **{character}** from the **{universe}** universe. "
-      "Speak in character. Do not simulate a conversation. "
-      "Only reply with what {character} would say next."),
-    MessagesPlaceholder("messages"),
+      "Speak in character. Only reply with what {character} would say next."),
+      MessagesPlaceholder("messages"),
     ("user", "{input}")
   ])
 
-  # Local LLM from Ollama
   llm = ChatOllama(
     model="llama3.2",
     base_url=ollama_url,
     temperature=0.7
   )
 
-  # Simple chain: prompt → LLM
+  # Chain: prompt → LLM
   chain = prompt | llm
 
-  # Node that updates state and returns response
   def reply_node(state: ChatState) -> ChatState:
-    input_msg = state["input"]
-    messages = state.get("messages", [])
-    messages.append({"role": "user", "content": input_msg})
+  # Start with existing history from Redis
+    msgs = list(state.messages or [])
+    # Append the new user input
+    msgs.append({"role": "user", "content": state.input})
 
-    # Generate response
-    response = chain.invoke({
+    # Invoke the model; may return an AIMessage
+    raw_out = chain.invoke({
       "character": character,
       "universe": universe,
-      "input": input_msg,
-      "messages": messages
+      "input":     state.input,
+      "messages":  msgs
     })
 
-    messages.append({"role": "assistant", "content": response})
+    # Extract plain text
+    out_text = raw_out.content if hasattr(raw_out, 'content') else str(raw_out)
+    # Append assistant response
+    msgs.append({"role": "assistant", "content": out_text})
 
-    return {
-      "input": input_msg,
-      "messages": messages,
-      "output": response
-    }
+    return ChatState(
+      input=state.input,
+      messages=msgs,
+      output=out_text
+    )
 
-  # Create the graph with state schema
   builder = StateGraph(ChatState)
   builder.add_node("chat", RunnableLambda(reply_node))
   builder.set_entry_point("chat")
   builder.add_edge("chat", END)
 
-  # Compile and return LangGraph instance
   return builder.compile()
