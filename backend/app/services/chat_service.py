@@ -9,6 +9,7 @@ async def process_chat_message(
   character: str,
   universe: str,
   user_input: str,
+  ai_model,
   max_history: int
 ) -> dict:
   # Ensure session_id
@@ -17,7 +18,6 @@ async def process_chat_message(
 
   history_key = f"chat_history:{user_id}:{session_id}"
 
-  print("\n\nUser input: ", user_input)
 
   # 1) Cache user message in Redis
   await redis.rpush(history_key, json.dumps({"role": "user", "content": user_input}))
@@ -31,7 +31,7 @@ async def process_chat_message(
   history = [json.loads(item) for item in raw]
 
   # 4) Invoke the LLM graph
-  chat_graph = create_chat_graph(character, universe)
+  chat_graph = create_chat_graph(character, universe, ai_model)
   result = chat_graph.invoke({"input": user_input, "messages": history})
   raw_out = result["output"]
   out_text = raw_out.content if hasattr(raw_out, "content") else str(raw_out)

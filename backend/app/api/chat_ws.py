@@ -12,9 +12,8 @@ async def websocket_chat(
   session_id: str
 ):
   await manager.connect(session_id, ws)
-  print(session_id, user_id)
+  
   try:
-    print("\n\n Here \n\n")
     while True:
       payload = await ws.receive_json()
       print("Payload: ", payload)
@@ -25,6 +24,7 @@ async def websocket_chat(
         character=payload["character"],
         universe=payload["universe"],
         user_input=payload["input"],
+        ai_model=payload["ai_model"],
         max_history=manager.max_history
       )
       await manager.send_personal(ws, result)

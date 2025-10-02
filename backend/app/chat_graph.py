@@ -3,6 +3,7 @@
 import os
 from typing import List, Optional
 from pydantic import BaseModel
+from backend.app.api.consts import AI_MODELS
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langgraph.graph import StateGraph, END
@@ -16,7 +17,7 @@ class ChatState(BaseModel):
   output: Optional[str] = None  # allow initial state without output
 
 
-def create_chat_graph(character: str, universe: str):
+def create_chat_graph(character: str, universe: str, ai_model: str):
   # Prompt template with memory placeholder
   prompt = ChatPromptTemplate.from_messages([
     ("system",
@@ -27,7 +28,7 @@ def create_chat_graph(character: str, universe: str):
   ])
 
   llm = ChatOllama(
-    model="llama3.2",
+    model=AI_MODELS[ai_model],
     base_url=ollama_url,
     temperature=0.7
   )

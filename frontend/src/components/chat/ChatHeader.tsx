@@ -1,8 +1,57 @@
-export default function ChatHeader({ name, universe }: { name: string; universe: string }) {
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useEffect, useState } from "react";
+
+export default function ChatHeader({
+  name,
+  universe,
+}: {
+  name: string;
+  universe: string;
+}) {
+  const [aiModel, setAIModel] = useState<string | null>(null);
+
+  // On mount, check if ai_model exists in localStorage
+  useEffect(() => {
+    const savedAIModel = localStorage.getItem("ai_model");
+    if (savedAIModel) {
+      setAIModel(savedAIModel);
+    } else {
+      localStorage.setItem("ai_model", "llama");
+      setAIModel("llama");
+    }
+  }, []);
+
+  const handleChange = (value: string) => {
+    setAIModel(value);
+    localStorage.setItem("ai_model", value);
+  };
+
   return (
-    <div className="px-6 py-4 text-lg bg-gray-800 border-b border-t border-gray-700">
-      Chatting with <span className="font-semibold">{name}</span> from{' '}
-      <span className="font-semibold">{universe}</span>
+    <div className="flex justify-between items-center px-6 py-4 bg-gray-800 border-b border-t border-gray-700">
+      <div className="text-lg">
+        Chatting with <span className="font-semibold">{name}</span> from{" "}
+        <span className="font-semibold">{universe}</span>
+      </div>
+
+      <div className="flex items-center">
+        <label className="mr-4">AI Model: </label>
+        <Select value={aiModel ?? ""} onValueChange={handleChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select an AI Model" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="llama">Llama 3.2</SelectItem>
+            <SelectItem value="gemma">Gemma 3</SelectItem>
+            <SelectItem value="dolphin-mistral">Dolphin Mistral</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
     </div>
-  )
+  );
 }

@@ -29,7 +29,7 @@ export function useChat(selected: Character) {
   const sendMessage = useCallback((content: string) => {
     if (!content.trim()) return
     setMessages(prev => ([...prev, { role: 'user', content }, { role: 'loading', content: `${selected.name} is thinking...` }]))
-    send({ input: content, character: selected.name, universe: selected.universe })
+    send({ input: content, character: selected.name, universe: selected.universe, ai_model: localStorage.getItem("ai_model") || "llama" })
   }, [selected.name, selected.universe, send])
 
   const hasNonLoading = useMemo(() => messages.some(m => m.role !== 'loading'), [messages])
