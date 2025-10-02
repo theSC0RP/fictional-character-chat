@@ -3,7 +3,7 @@
 import os
 from typing import List, Optional
 from pydantic import BaseModel
-from backend.app.api.consts import AI_MODELS
+from app.api.consts import AI_MODELS
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langgraph.graph import StateGraph, END
@@ -22,7 +22,7 @@ def create_chat_graph(character: str, universe: str, ai_model: str):
   prompt = ChatPromptTemplate.from_messages([
     ("system",
       "You are roleplaying as **{character}** from the **{universe}** universe. "
-      "Speak in character. Only reply with what {character} would say next."),
+      "Speak in character. Talk just the way the character would talk in that universe. Only reply with what {character} would say next."),
       MessagesPlaceholder("messages"),
     ("user", "{input}")
   ])

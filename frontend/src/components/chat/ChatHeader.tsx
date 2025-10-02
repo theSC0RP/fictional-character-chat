@@ -48,7 +48,7 @@ export default function ChatHeader({
           <SelectContent>
             <SelectItem value="llama">Llama 3.2</SelectItem>
             <SelectItem value="gemma">Gemma 3</SelectItem>
-            <SelectItem value="dolphin-mistral">Dolphin Mistral</SelectItem>
+            <SelectItem value="mistral">Mistral</SelectItem>
           </SelectContent>
         </Select>
       </div>

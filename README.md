@@ -1,6 +1,6 @@
 # Fictional Chat
 
-Fictional Chat is a web application that lets you carry on conversations with your favorite fictional characters. It uses a locally hosted LLM (llama3.2) served via Ollama within Docker containers, ensuring privacy and full control over the model.
+Fictional Chat is a multi-llm web application that lets you carry on conversations with your favorite fictional characters. It uses locally hosted LLMs served via Ollama within Docker containers, ensuring privacy and full control over the model.
 
 ![Screenshot](./images/ss.png)
 
@@ -11,14 +11,14 @@ Fictional Chat is a web application that lets you carry on conversations with yo
 <li>Persistent sidebar: Default and user characters are displayed in separate sections. Added characters are reloaded from localStorage each time the app starts.
 <li>Modern UI: Built with React, TypeScript, Headless UI, and Tailwind CSS for a responsive and accessible interface.
 <li>Empty chat prompt: If there are no previous chats for a character, the UI shows a centered playful message to encourage chatting.
-<li>Local LLM hosting: Host llama3.2 locally via Ollama and Docker to keep all data on your machine.
+<li>Local LLM hosting: Host llama3.2, gemma3 & mistral locally via Ollama and Docker to keep all data on your machine.
 </ul>
 
 ### Prerequisites
 <ul>
 	<li>Docker installed on your system (Docker Engine 20.10+)
 	<li>Ollama CLI (ensure you have access to ollama command)
-	<li>llama3.2 model downloaded via Ollama
+	<li>llama3.2, gemma3 & mistral model downloaded via Ollama
 	<li>Node.js (v16 or higher) and npm/yarn for frontend dependencies
 </ul>
 
@@ -30,9 +30,11 @@ cd fictional-chat
 ```
 <br>
 
-2. Pull the LLM model
+2. Pull the LLM models
 ```bash
-ollama pull llama3.2
+ollama pull llama3.2:latest
+ollama pull gemma3:latest
+ollama pull mistral:latest
 ```
 <br>
 
