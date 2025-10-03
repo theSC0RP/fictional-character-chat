@@ -29,7 +29,7 @@ async def clear_history(
   Clears chat history with a character
   """
   try:
-    docs_updated = clear_character_chat_history(user_id, character_id)
+    docs_updated = await clear_character_chat_history(user_id, character_id)
     if docs_updated == 0:
       raise Exception("Could not clear chat history")
   except Exception as e:

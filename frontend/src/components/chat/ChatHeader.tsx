@@ -5,12 +5,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import axios from "axios";
 import { clearCharacterChatHistory } from "@/lib/api";
-import { useChat } from "@/hooks/useChat";
-import { useCharacters } from "@/hooks/useCharacters";
+import { useCharactersContext } from "@/context/CharactersContext";
+import { useChatContext } from "@/context/ChatContext";
+import { AI_MODEL_KEY } from "@/lib/constants";
 
 export default function ChatHeader({
   name,
@@ -20,31 +20,31 @@ export default function ChatHeader({
   universe: string;
 }) {
   const [aiModel, setAIModel] = useState<string | null>(null);
-  const { selected } = useCharacters();
-  const { setMessages } = useChat(selected);
+  const { selected } = useCharactersContext();
+  const { setMessages } = useChatContext();
 
   // On mount, check if ai_model exists in localStorage
   useEffect(() => {
-    const savedAIModel = localStorage.getItem("ai_model");
+    const savedAIModel = localStorage.getItem(AI_MODEL_KEY);
     if (savedAIModel) {
       setAIModel(savedAIModel);
     } else {
-      localStorage.setItem("ai_model", "llama");
+      localStorage.setItem(AI_MODEL_KEY, "llama");
       setAIModel("llama");
     }
   }, []);
 
   const handleChange = (value: string) => {
     setAIModel(value);
-    localStorage.setItem("ai_model", value);
+    localStorage.setItem(AI_MODEL_KEY, value);
   };
 
   const resetCharacterChat = async () => {
     if (selected) {
       const success = await clearCharacterChatHistory(selected.id);
-
+      console.log("In ChatHeader after API Call: ", success)
       if (success)
-        setMessages([])
+        setMessages([]);
     }
   };
 

@@ -5,20 +5,21 @@ import EmptyChat from './components/EmptyChat'
 import ChatHeader from './components/chat/ChatHeader'
 import MessageList from './components/chat/MessageList'
 import MessageInput from './components/chat/MessageInput'
-import { useCharacters } from './hooks/useCharacters'
-import { useChat } from './hooks/useChat'
 import { defaultCharacters } from './lib/constants'
 import type { Character } from './types'
 import './App.css'
+import { useChatContext } from './context/ChatContext'
+import { useCharactersContext } from './context/CharactersContext'
 
 export default function App() {
   const inputRef = useRef<HTMLInputElement | null>(null)
 
-  const { allCharacters, userCharacters, selected, setSelected, addCharacter, deleteCharacter } = useCharacters()
-  const { messages, sendMessage, connected, hasNonLoading } = useChat(selected)
+  const { allCharacters, userCharacters, selected, setSelected, addCharacter, deleteCharacter } = useCharactersContext()
+  const { messages, sendMessage, connected, hasNonLoading } = useChatContext()
   const [showModal, setShowModal] = useState(false)
 
   const onSelect = (id: string) => {
+    console.log(id)
     const next = allCharacters.find(c => c.id === id)
     if (next) setSelected(next)
   }
