@@ -11,7 +11,7 @@ Fictional Chat is a multi-llm web application that lets you carry on conversatio
 <li>Persistent sidebar: Default and user characters are displayed in separate sections. Added characters are reloaded from localStorage each time the app starts.
 <li>Modern UI: Built with React, TypeScript, Headless UI, and Tailwind CSS for a responsive and accessible interface.
 <li>Empty chat prompt: If there are no previous chats for a character, the UI shows a centered playful message to encourage chatting.
-<li>Local LLM hosting: Host llama3.2, gemma3 & mistral locally via Ollama and Docker to keep all data on your machine.
+<li>Local LLM hosting: Host llama3.2, gemma3 & mistral locally via Ollama to keep all data on your machine.
 </ul>
 
 ### Prerequisites
