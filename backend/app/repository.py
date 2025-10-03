@@ -1,12 +1,12 @@
 # File: backend/app/repository.py
 
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
 from app.db import chat_sessions
 
 async def log_message(
   user_id: str,
-  session_id: str,
+  character_id: str,
   character: str,
   universe: str,
   role: str,
@@ -15,11 +15,11 @@ async def log_message(
   """
   Upsert a chat session document and append a message.
   """
-  filter_doc = {"user_id": user_id, "session_id": session_id}
+  filter_doc = {"user_id": user_id, "character_id": character_id}
   update = {
     "$setOnInsert": {
       "user_id":   user_id,
-      "session_id": session_id,
+      "character_id": character_id,
       "character": character,
       "universe":  universe,
       "created_at": datetime.utcnow()
@@ -34,13 +34,9 @@ async def log_message(
   }
   await chat_sessions.update_one(filter_doc, update, upsert=True)
 
-
-from typing import Optional, Dict, Any
-from app.db import chat_sessions
-
 async def get_session_history(
   user_id: str,
-  session_id: str,
+  character_id: str,
   limit: int = 40,
 ) -> Optional[Dict[str, Any]]:
   """
@@ -48,12 +44,12 @@ async def get_session_history(
   Uses aggregation to avoid pulling huge arrays.
   """
   pipeline = [
-    {"$match": {"user_id": user_id, "session_id": session_id}},
+    {"$match": {"user_id": user_id, "character_id": character_id}},
     {
       "$project": {
         "_id": 0,
         "user_id": 1,
-        "session_id": 1,
+        "character_id": 1,
         "character": 1,
         "universe": 1,
         "messages": {"$slice": ["$messages", -int(limit)]},

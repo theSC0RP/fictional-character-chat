@@ -5,7 +5,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
+import { Button } from "../ui/button";
+import axios from "axios";
+import { clearCharacterChatHistory } from "@/lib/api";
 
 export default function ChatHeader({
   name,
@@ -32,11 +35,29 @@ export default function ChatHeader({
     localStorage.setItem("ai_model", value);
   };
 
+  const resetCharacterChat = () => {
+    const characterId = localStorage.getItem("lastSelectedId");
+
+    if (characterId)
+      clearCharacterChatHistory(characterId)
+  };
+
   return (
     <div className="flex justify-between items-center px-6 py-4 bg-gray-800 border-b border-t border-gray-700">
-      <div className="text-lg">
-        Chatting with <span className="font-semibold">{name}</span> from{" "}
-        <span className="font-semibold">{universe}</span>
+      <div className="flex items-center">
+        <div className="text-lg">
+          Chatting with <span className="font-semibold">{name}</span> from{" "}
+          <span className="font-semibold">{universe}</span>
+        </div>
+        <Button
+          variant="outline"
+          className="ml-4 bg-transparent border-1 border-red-400 text-red-400 hover:text-red-500 hover:bg-transparent hover:border-red-600 cursor-pointer"
+          onClick={() => {
+            resetCharacterChat();
+          }}
+        >
+          Clear Chat
+        </Button>
       </div>
 
       <div className="flex items-center">

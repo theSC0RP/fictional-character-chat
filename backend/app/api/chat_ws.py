@@ -5,13 +5,13 @@ from app.services.chat_service import process_chat_message
 router = APIRouter()
 
 
-@router.websocket("/chat/{user_id}/{session_id}")
+@router.websocket("/chat/{user_id}/{character_id}")
 async def websocket_chat(
   ws: WebSocket,
   user_id: str,
-  session_id: str
+  character_id: str
 ):
-  await manager.connect(session_id, ws)
+  await manager.connect(character_id, ws)
   
   try:
     while True:
@@ -20,7 +20,7 @@ async def websocket_chat(
       result = await process_chat_message(
         redis=manager.redis,
         user_id=user_id,
-        session_id=session_id,
+        character_id=character_id,
         character=payload["character"],
         universe=payload["universe"],
         user_input=payload["input"],
@@ -29,4 +29,4 @@ async def websocket_chat(
       )
       await manager.send_personal(ws, result)
   except WebSocketDisconnect:
-    manager.disconnect(session_id, ws)
+    manager.disconnect(character_id, ws)

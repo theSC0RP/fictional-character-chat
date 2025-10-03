@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { USER_ID } from '../lib/constants'
 
-export function useChatSocket(sessionId: string, onAssistant: (delta: string) => void) {
+export function useChatSocket(characterId: string, onAssistant: (delta: string) => void) {
   const wsRef = useRef<WebSocket | null>(null)
   const [connected, setConnected] = useState(false)
 
@@ -12,7 +12,7 @@ export function useChatSocket(sessionId: string, onAssistant: (delta: string) =>
     //   setConnected(false)
     // }
 
-    const socket = new WebSocket(`ws://localhost:8000/chat/${USER_ID}/${sessionId}`)
+    const socket = new WebSocket(`ws://localhost:8000/chat/${USER_ID}/${characterId}`)
     wsRef.current = socket
 
     socket.onopen = () => setConnected(true)
@@ -29,7 +29,7 @@ export function useChatSocket(sessionId: string, onAssistant: (delta: string) =>
     }
 
     // return () => socket.close()
-  }, [sessionId, onAssistant])
+  }, [characterId, onAssistant])
 
   const send = (payload: any) => {
     if (!connected || !wsRef.current) return

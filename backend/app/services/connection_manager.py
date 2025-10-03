@@ -11,12 +11,12 @@ class ConnectionManager:
     )
     self.max_history = int(os.getenv("MAX_HISTORY", "20"))
 
-  async def connect(self, session_id: str, ws: WebSocket):
+  async def connect(self, character_id: str, ws: WebSocket):
     await ws.accept()
-    self.active.setdefault(session_id, set()).add(ws)
+    self.active.setdefault(character_id, set()).add(ws)
 
-  def disconnect(self, session_id: str, ws: WebSocket):
-    self.active.get(session_id, set()).discard(ws)
+  def disconnect(self, character_id: str, ws: WebSocket):
+    self.active.get(character_id, set()).discard(ws)
 
   async def send_personal(self, ws: WebSocket, data: dict):
     await ws.send_text(json.dumps(data))

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Character, Message } from '../types'
-import { fetchHistory } from '../lib/api'
+import { fetchCharacterChatHistory } from '../lib/api'
 import { useChatSocket } from './useChatSocket'
 
 export function useChat(selected: Character) {
@@ -10,7 +10,7 @@ export function useChat(selected: Character) {
   useEffect(() => {
     let cancelled = false
     const load = async () => {
-      const history = await fetchHistory(selected.id, 40)
+      const history = await fetchCharacterChatHistory(selected.id, 40)
       if (!cancelled) setMessages(history)
     }
     load()
