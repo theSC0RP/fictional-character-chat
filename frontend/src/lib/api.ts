@@ -27,14 +27,17 @@ export async function fetchCharacterChatHistory(characterId: string, limit = 40)
   }
 }
 
-export async function clearCharacterChatHistory(characterId: string) {
+export async function clearCharacterChatHistory(characterId: string): Promise<boolean> {
   try {
     const res = await axios.patch(`${API_BASE}/history/${USER_ID}/${characterId}`, { messages: [] });
   
     if (res.status !== 200) {
-      throw Error("Could not clear character histroy")
+      throw Error("Could not clear character history")
     }
+
+    return true
   } catch (error) {
     console.log("Error clearing history: ", error)
+    return false
   }
 }

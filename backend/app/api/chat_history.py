@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
-from app.repository import get_session_history
+from app.repository import clear_character_chat_history, get_character_chat_history
 
 router = APIRouter()
 
@@ -14,10 +14,10 @@ async def get_history(
   Returns most recent `limit` messages (user/assistant) for a character,
   plus character/universe metadata.
   """
-  doc = await get_session_history(user_id=user_id, character_id=character_id, limit=limit)
+  doc = await get_character_chat_history(user_id=user_id, character_id=character_id, limit=limit)
   if not doc:
-    # Return an empty session structure so the FE can render cleanly
     return {"user_id": user_id, "character_id": character_id, "character": None, "universe": None, "messages": []}
+  
   return doc
 
 @router.patch("/history/{user_id}/{character_id}")
@@ -28,5 +28,12 @@ async def clear_history(
   """
   Clears chat history with a character
   """
+  try:
+    docs_updated = clear_character_chat_history(user_id, character_id)
+    if docs_updated == 0:
+      raise Exception("Could not clear chat history")
+  except Exception as e:
+    return HTTPException(status_code=500, detail="Could not clear chat history")
 
-  
+  return {"message": "Chat history cleared successfully"}
+

@@ -34,7 +34,7 @@ async def log_message(
   }
   await chat_sessions.update_one(filter_doc, update, upsert=True)
 
-async def get_session_history(
+async def get_character_chat_history(
   user_id: str,
   character_id: str,
   limit: int = 40,
@@ -59,3 +59,22 @@ async def get_session_history(
   cursor = chat_sessions.aggregate(pipeline)
   docs = await cursor.to_list(length=1)
   return docs[0] if docs else None
+
+async def clear_character_chat_history(
+  user_id: str,
+  character_id: str
+):
+  """
+  Update the document to clear the messages for the character
+  """
+  filter_doc = {"user_id": user_id, "character_id": character_id}
+  update = {
+    "$set": {
+      "messages": [],
+      "updated_at": datetime.utcnow()
+    }
+  }
+
+  result = await chat_sessions.update_one(filter_doc, update)
+  
+  return result.matched_count

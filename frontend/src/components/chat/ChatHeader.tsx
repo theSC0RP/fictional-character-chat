@@ -9,6 +9,8 @@ import { useEffect, useState, Fragment } from "react";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { clearCharacterChatHistory } from "@/lib/api";
+import { useChat } from "@/hooks/useChat";
+import { useCharacters } from "@/hooks/useCharacters";
 
 export default function ChatHeader({
   name,
@@ -18,6 +20,8 @@ export default function ChatHeader({
   universe: string;
 }) {
   const [aiModel, setAIModel] = useState<string | null>(null);
+  const { selected } = useCharacters();
+  const { setMessages } = useChat(selected);
 
   // On mount, check if ai_model exists in localStorage
   useEffect(() => {
@@ -35,11 +39,13 @@ export default function ChatHeader({
     localStorage.setItem("ai_model", value);
   };
 
-  const resetCharacterChat = () => {
-    const characterId = localStorage.getItem("lastSelectedId");
+  const resetCharacterChat = async () => {
+    if (selected) {
+      const success = await clearCharacterChatHistory(selected.id);
 
-    if (characterId)
-      clearCharacterChatHistory(characterId)
+      if (success)
+        setMessages([])
+    }
   };
 
   return (

@@ -16,7 +16,7 @@ async def websocket_chat(
   try:
     while True:
       payload = await ws.receive_json()
-      print("Payload: ", payload)
+      
       result = await process_chat_message(
         redis=manager.redis,
         user_id=user_id,
