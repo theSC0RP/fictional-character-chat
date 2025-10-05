@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
-from app.repository import clear_character_chat_history, get_character_chat_history
+from backend.app.repositories.chat_repository import clear_character_chat_history, get_character_chat_history
 
-router = APIRouter()
+router = APIRouter(prefix="/history", tags=["ChatHistory"])
 
-@router.get("/history/{user_id}/{character_id}")
+@router.get("/{user_id}/{character_id}")
 async def get_history(
   user_id: str,
   character_id: str,
@@ -20,7 +20,7 @@ async def get_history(
   
   return doc
 
-@router.patch("/history/{user_id}/{character_id}")
+@router.patch("/{user_id}/{character_id}")
 async def clear_history(
   user_id: str,
   character_id: str
