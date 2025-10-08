@@ -18,7 +18,8 @@ from app.core.security import (
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 class SignUpRequest(BaseModel):
-  fullname: str
+  first_name: str
+  last_name: str
   email: EmailStr
   password: str
 @router.post("/sign-up")
@@ -27,7 +28,7 @@ async def sign_up(payload: SignUpRequest):
   if existing_user:
     raise HTTPException(status_code=400, detail="Email already registered")
 
-  user = await create_user(payload.fullname, payload.email, payload.password)
+  user = await create_user(payload.first_name, payload.last_name, payload.email, payload.password)
   return {"message": "User created successfully", "user": {"fullname": user["fullname"], "email": user["email"]}}
 
 
@@ -56,7 +57,7 @@ async def sign_in(payload: SignInRequest, response: Response):
   }
 
 
-@router.post("/sign-out")
+@router.patch("/sign-out")
 async def sign_out(request: Request, response: Response):
   refresh_token = request.cookies.get("refresh_token")
   if not refresh_token:

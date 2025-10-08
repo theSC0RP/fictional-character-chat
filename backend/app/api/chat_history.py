@@ -20,7 +20,7 @@ async def get_history(
   
   return doc
 
-@router.patch("/{user_id}/{character_id}")
+@router.delete("/{user_id}/{character_id}")
 async def clear_history(
   user_id: str,
   character_id: str
