@@ -2,6 +2,7 @@
 
 from app.db import db
 from app.core.security import hash_password
+from bson import ObjectId
 
 users_collection = db["users"]
 
@@ -9,7 +10,12 @@ async def get_user_by_email(email: str):
   return await users_collection.find_one({"email": email})
 
 async def get_user_by_id(user_id: str):
-  return await users_collection.find_one({"_id": user_id})
+  try:
+    oid = ObjectId(user_id)
+  except Exception:
+    return None  # invalid id
+
+  return await users_collection.find_one({"_id": oid})
 
 async def create_user(first_name: str, last_name: str, email: str, password: str):
   user = {

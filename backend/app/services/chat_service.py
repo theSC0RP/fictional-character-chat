@@ -1,6 +1,6 @@
 import json, uuid
 from app.chat_graph import create_chat_graph
-from app.repository import log_message
+from app.repositories.chat_repository import log_message
 
 async def process_chat_message(
   redis,

@@ -15,6 +15,9 @@ aioredis = "*"
 redis = "*"
 motor = "*"
 websockets = "*"
+pyjwt = "*"
+passlib = "*"
+email-validator = "*"
 
 [dev-packages]
 
