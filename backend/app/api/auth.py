@@ -16,6 +16,7 @@ from app.core.security import (
     create_refresh_token,
     decode_token,
 )
+from app.dependencies.auth import verify_jwt_and_get_user
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -120,24 +121,7 @@ async def sign_in(payload: SignInRequest, response: Response):
 
 
 @router.post("/sign-out")
-async def sign_out(request: Request, response: Response):
-  refresh_token = request.cookies.get("refresh_token")
-  if not refresh_token:
-    raise HTTPException(status_code=400, detail="No refresh token found")
-
-  payload = decode_token(refresh_token)
-  if not payload:
-    raise HTTPException(status_code=401, detail="Invalid or expired refresh token")
-
-  user_id = payload.get("sub")
-  if not user_id:
-    raise HTTPException(status_code=401, detail="Invalid refresh token payload")
-
-  # Fetch user by ID instead of email
-  user = await get_user_by_id(user_id)
-  if not user or user["refresh_token"] != refresh_token:
-    raise HTTPException(status_code=403, detail="Unauthorized")
-  
+async def sign_out(user = Depends(verify_jwt_and_get_user), response: Response = None):
   await clear_refresh_token(user["email"])
 
   response.delete_cookie("access_token")
