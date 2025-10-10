@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white">
@@ -6,18 +8,18 @@ export default function Home() {
         Chat with your favorite fictional characters — powered by AI.
       </p>
       <div className="space-x-4">
-        <a
-          href="/sign-in"
+        <Link
+          to="/sign-in"
           className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-medium"
         >
           Sign In
-        </a>
-        <a
-          href="/sign-up"
+        </Link>
+        <Link
+          to="/sign-up"
           className="border border-blue-600 hover:bg-blue-600 px-6 py-2 rounded-lg text-white font-medium"
         >
           Sign Up
-        </a>
+        </Link>
       </div>
     </div>
   )

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom"
 
 export default function SignUp() {
   const [form, setForm] = useState({
@@ -72,7 +73,7 @@ export default function SignUp() {
 
         <p className="mt-4 p-4 border-t-1 border-t-gray-700 text-sm text-center">
           Already have an account?{" "}
-          <a href="/sign-in" className="text-blue-400 hover:underline cursor-pointer">Sign In</a>
+          <Link to="/sign-in" className="text-blue-400 hover:underline cursor-pointer">Sign In</Link>
         </p>
       </div>
     </div>

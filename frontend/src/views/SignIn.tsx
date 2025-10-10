@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom"
 
 export default function SignIn() {
   const [email, setEmail] = useState("")
@@ -40,7 +41,7 @@ export default function SignIn() {
 
         <p className="mt-4 p-4 border-t-1 border-t-gray-700 text-sm text-center">
           Don’t have an account?{" "}
-          <a href="/sign-up" className="text-blue-400 hover:underline cursor-pointer">Sign Up</a>
+          <Link to="/sign-up" className="text-blue-400 hover:underline cursor-pointer">Sign Up</Link>
         </p>
       </div>
     </div>
