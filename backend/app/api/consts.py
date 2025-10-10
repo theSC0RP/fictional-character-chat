@@ -3,3 +3,6 @@ AI_MODELS = {
   "gemma": "gemma3",
   "mistral": "mistral"
 }
+
+AUTH_API_PREFIX = "/auth"
+CHAT_HISTORY_API_PREFIX = "/chat-history"

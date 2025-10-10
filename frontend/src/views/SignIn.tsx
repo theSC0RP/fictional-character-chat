@@ -1,14 +1,36 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { signIn } from "@/lib/api/auth"
+import { useAuth } from "@/context/AuthContext"
 
 export default function SignIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  
+  const navigate = useNavigate()
+  const { login } = useAuth()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log({ email, password })
+    setError("")
+
+    try {
+      const response = await signIn({ email, password })
+      console.log(response)
+      if (response.status === 200) {
+        login();
+        navigate("/chat");
+      }
+    } catch (err: any) {
+      console.error("Sign-in error:", err)
+      if (err.response?.status === 401) {
+        setError("Invalid email or password.")
+      } else {
+        setError("Something went wrong. Please try again.")
+      }
+    }
   }
 
   return (
@@ -36,6 +58,9 @@ export default function SignIn() {
               required
             />
           </div>
+          
+          {error && <p className="text-red-500 mb-2 text-sm">{error}</p>}
+
           <Button type="submit" className="w-full my-4 bg-blue-600 hover:bg-blue-700 cursor-pointer">Sign In</Button>
         </form>
 

@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { clearCharacterChatHistory } from "@/lib/api";
+import { clearCharacterChatHistory } from "@/lib/api/chat";
 import { useCharactersContext } from "@/context/CharactersContext";
 import { useChatContext } from "@/context/ChatContext";
 import { AI_MODEL_KEY } from "@/lib/constants";

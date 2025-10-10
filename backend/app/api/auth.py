@@ -1,6 +1,6 @@
 # app/api/auth.py
 
-from fastapi import APIRouter, HTTPException, Depends, Request, Response
+from fastapi import APIRouter, HTTPException, Depends, Request, Response, status
 from pydantic import BaseModel, EmailStr, field_validator
 import re
 from app.repositories.auth_repository import (
@@ -16,11 +16,30 @@ from app.core.security import (
     create_refresh_token,
     decode_token,
 )
+from app.core.config import ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_DAYS
+from app.api.consts import AUTH_API_PREFIX
 from app.dependencies.auth import verify_jwt_and_get_user
 
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter(prefix=AUTH_API_PREFIX, tags=["Auth"])
 
+def set_token_cookies(response: Response, access_token: str, refresh_token: str):
+  response.set_cookie(
+    key="access_token",
+    value=access_token,
+    httponly=True,
+    secure=True,  
+    samesite="strict",
+    max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60
+  )
+  response.set_cookie(
+    key="refresh_token",
+    value=refresh_token,
+    httponly=True,
+    secure=True,
+    samesite="strict",
+    max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
+  )
 
 class SignUpRequest(BaseModel):
   first_name: str
@@ -40,7 +59,7 @@ class SignUpRequest(BaseModel):
     if not re.search(r"\d", v):
       raise ValueError("Password must contain at least one number.")
 
-@router.post("/sign-up")
+@router.post("/sign-up", status_code=status.HTTP_201_CREATED)
 async def sign_up(payload: SignUpRequest, response: Response):
   existing_user = await get_user_by_email(payload.email)
   if existing_user:
@@ -59,21 +78,7 @@ async def sign_up(payload: SignUpRequest, response: Response):
   # Save refresh token in DB
   await update_refresh_token(user["email"], refresh_token)
 
-  # Set secure HttpOnly cookies (if frontend expects this)
-  response.set_cookie(
-    key="access_token",
-    value=access_token,
-    httponly=True,
-    secure=True,
-    samesite="None",  # required for cross-site cookies (React, etc.)
-  )
-  response.set_cookie(
-    key="refresh_token",
-    value=refresh_token,
-    httponly=True,
-    secure=True,
-    samesite="None",
-  )
+  set_token_cookies(response, access_token, refresh_token)
 
   return {
     "message": "User created and logged in successfully",
@@ -92,7 +97,7 @@ class SignInRequest(BaseModel):
   email: EmailStr
   password: str
 
-@router.post("/sign-in")
+@router.post("/sign-in", status_code=status.HTTP_200_OK)
 async def sign_in(payload: SignInRequest, response: Response):
   user = await get_user_by_email(payload.email)
   if not user or not verify_password(payload.password, user["password"]):
@@ -108,9 +113,7 @@ async def sign_in(payload: SignInRequest, response: Response):
 
   await update_refresh_token(payload.email, refresh_token)
 
-  # Set cookies (optional, depends on frontend)
-  response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True)
-  response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True)
+  set_token_cookies(response, access_token, refresh_token)
 
   return {
     "message": "Login successful",
@@ -167,3 +170,15 @@ async def refresh_access_token(request: Request, response: Response):
   )
 
   return {"message": "Access token refreshed", "access_token": new_access_token}
+
+@router.get("/me")
+async def auth_me(current_user: dict = Depends(verify_jwt_and_get_user)):
+  """Return the currently logged-in user."""
+  return {
+    "user": {
+      "id": str(current_user["_id"]),
+      "first_name": current_user["first_name"],
+      "last_name": current_user["last_name"],
+      "email": current_user["email"],
+    }
+  }

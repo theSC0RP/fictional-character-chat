@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
 from app.repositories.chat_repository import clear_character_chat_history, get_character_chat_history
+from app.api.consts import CHAT_HISTORY_API_PREFIX
 
-router = APIRouter(prefix="/history", tags=["ChatHistory"])
+router = APIRouter(prefix=CHAT_HISTORY_API_PREFIX, tags=["ChatHistory"])
 
 @router.get("/{user_id}/{character_id}")
 async def get_history(

@@ -15,3 +15,7 @@ export const defaultCharacters:Character[] = [
   { id: 'tony_stark', name: 'Tony Stark', universe: 'Marvel Cinematic Universe', default: true },
   { id: 'luffy', name: 'Monkey D. Luffy', universe: 'One Piece', default: true }
 ] 
+
+
+export const AUTH_API_PREFIX = "/auth"
+export const CHAT_HISTORY_API_PREFIX = "/chat-history"

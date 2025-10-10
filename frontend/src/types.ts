@@ -11,3 +11,15 @@ export type Character = {
   universe: string
   default?: boolean
 }
+
+export type SignUpRequest = {
+  first_name: string
+  last_name: string
+  email: string
+  password: string
+}
+
+export type SignInRequest = {
+  email: string
+  password: string
+}

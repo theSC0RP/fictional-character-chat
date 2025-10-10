@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo, type ReactElement } from "react"
 import type { Character, Message } from "../types"
-import { fetchCharacterChatHistory } from "../lib/api"
+import { fetchCharacterChatHistory } from "../lib/api/chat"
 import { useChatSocket } from "@/hooks/useChatSocket"
 import { useCharactersContext } from "./CharactersContext"
 import { AI_MODEL_KEY } from "@/lib/constants"

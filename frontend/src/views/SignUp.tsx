@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { signUp } from "@/lib/api/auth"
 
 export default function SignUp() {
   const [form, setForm] = useState({
@@ -9,14 +10,30 @@ export default function SignUp() {
     email: "",
     password: "",
   })
+  const navigate = useNavigate()
+  const [error, setError] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log(form)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      const response = await signUp(form)
+      if (response.status === 201)
+        navigate("/chat")
+    } catch (err: any) {
+      console.error("Sign-up error:", err)
+      if (err?.status === 422) {
+        console.log(err.response)
+        setError(err?.response?.data?.detail[0]?.msg.toString() || "Please enter valid details")
+      }
+      else
+        setError("Failed to sign up")
+    }
   }
 
   return (
@@ -68,6 +85,9 @@ export default function SignUp() {
               required
             />
           </div>
+
+          {error && <p className="text-red-500 mb-2 text-sm">{error}</p>}
+
           <Button type="submit" className="my-4 w-full bg-blue-600 hover:bg-blue-700 cursor-pointer">Sign Up</Button>
         </form>
 
