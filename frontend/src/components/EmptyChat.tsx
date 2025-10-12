@@ -1,4 +1,6 @@
+import { Bot, Hand, MessageCircle } from 'lucide-react'
 import React from 'react'
+import { Button } from './ui/button'
 
 type Props = {
   character: string
@@ -12,25 +14,7 @@ const EmptyChat: React.FC<Props> = ({ character, universe, onStart }) => {
       <div className="text-center">
         <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-gray-800/70 flex items-center justify-center border border-gray-700">
           {/* chat-bubble icon */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-7 w-7 text-gray-300"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M8 12h4m-6 4h6a6 6 0 0 0 6-6v0a6 6 0 0 0-6-6H8a6 6 0 0 0-6 6v0a6 6 0 0 0 6 6z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M8 18v2a1 1 0 0 0 1.447.894L13 20"
-            />
-          </svg>
+          <MessageCircle />
         </div>
 
         <h3 className="text-xl font-semibold text-gray-100">
@@ -38,17 +22,17 @@ const EmptyChat: React.FC<Props> = ({ character, universe, onStart }) => {
         </h3>
         <p className="mt-1 text-sm text-gray-400">
           You’re in the <span className="font-medium text-gray-300">{universe}</span> universe.
-          Break the ice with a hello—or ask a wild question.
+          Break the ice with a hello - or ask a wild question.
         </p>
 
         <div className="mt-5">
-          <button
+          <Button
             type="button"
             onClick={onStart}
             className="inline-flex items-center px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium focus:outline-none focus:ring focus:ring-indigo-500/50"
           >
-            Say hi to {character}
-          </button>
+            <Hand /> Say hi to {character}
+          </Button>
         </div>
 
         <p className="mt-3 text-xs text-gray-500">

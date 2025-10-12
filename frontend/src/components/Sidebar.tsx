@@ -2,6 +2,8 @@
 import React from 'react'
 import CharacterCard from './CharacterCard.tsx'
 import type { Character } from '../types'
+import { Button } from './ui/button.tsx'
+import { Plus } from 'lucide-react'
 
 type Props = {
   defaultCharacters: Character[]
@@ -58,12 +60,12 @@ const Sidebar: React.FC<Props> = ({
     </div>
 
     <div className="p-4">
-      <button
+      <Button
         onClick={onAdd}
         className="w-full py-2 bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none cursor-pointer"
       >
-        + Add Character
-      </button>
+        <Plus /> Add Character
+      </Button>
     </div>
   </aside>
 )

@@ -1,5 +1,5 @@
+import { WS_API_BASE } from '@/lib/constants'
 import { useEffect, useRef, useState } from 'react'
-import { USER_ID } from '../lib/constants'
 
 export function useChatSocket(characterId: string, onAssistant: (delta: string) => void) {
   const wsRef = useRef<WebSocket | null>(null)
@@ -12,12 +12,13 @@ export function useChatSocket(characterId: string, onAssistant: (delta: string) 
     //   setConnected(false)
     // }
 
-    const socket = new WebSocket(`ws://localhost:8000/chat/${USER_ID}/${characterId}`)
+    const socket = new WebSocket(`${WS_API_BASE}/chat/${characterId}`)
     wsRef.current = socket
 
     socket.onopen = () => setConnected(true)
     socket.onerror = () => setConnected(false)
     socket.onclose = () => {
+      console.log("Socket closed")
       setConnected(false)
       wsRef.current = null
     }

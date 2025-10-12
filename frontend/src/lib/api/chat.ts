@@ -46,16 +46,16 @@
 
 import axiosInstance from './axiosInstance'
 import type { Message } from '@/types'
-import { CHAT_HISTORY_API_PREFIX, USER_ID } from '../constants'
+import { CHAT_HISTORY_API_PREFIX } from '../constants'
 
 export async function fetchCharacterChatHistory(characterId: string, limit = 40): Promise<Message[]> {
-  const res = await axiosInstance.get(`${CHAT_HISTORY_API_PREFIX}/${USER_ID}/${characterId}`, { params: { limit } })
+  const res = await axiosInstance.get(`${CHAT_HISTORY_API_PREFIX}/${characterId}`, { params: { limit } })
   return (res.data.messages ?? [])
     .filter((m: any) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
     .map((m: any) => ({ role: m.role, content: m.content }))
 }
 
 export async function clearCharacterChatHistory(characterId: string): Promise<boolean> {
-  await axiosInstance.delete(`${CHAT_HISTORY_API_PREFIX}/${USER_ID}/${characterId}`)
+  await axiosInstance.delete(`${CHAT_HISTORY_API_PREFIX}/${characterId}`)
   return true
 }

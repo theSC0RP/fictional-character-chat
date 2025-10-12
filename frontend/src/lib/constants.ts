@@ -2,6 +2,7 @@ import type { Character } from "@/types"
 
 export const USER_ID = 'dev'
 export const API_BASE = 'http://localhost:8000'
+export const WS_API_BASE = 'ws://localhost:8000'
 
 export const STORAGE_KEY = 'chatCharacters'       // user-added only
 export const LAST_SELECTED_KEY = 'lastSelectedId'  // remember last selection

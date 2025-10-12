@@ -123,7 +123,7 @@ async def sign_in(payload: SignInRequest, response: Response):
 
 
 
-@router.post("/sign-out")
+@router.post("/sign-out", status_code=status.HTTP_204_NO_CONTENT)
 async def sign_out(user = Depends(verify_jwt_and_get_user), response: Response = None):
   await clear_refresh_token(user["email"])
 
@@ -176,7 +176,7 @@ async def auth_me(current_user: dict = Depends(verify_jwt_and_get_user)):
   """Return the currently logged-in user."""
   return {
     "user": {
-      "id": str(current_user["_id"]),
+      "id": current_user["id"],
       "first_name": current_user["first_name"],
       "last_name": current_user["last_name"],
       "email": current_user["email"],

@@ -15,7 +15,11 @@ async def get_user_by_id(user_id: str):
   except Exception:
     return None  # invalid id
 
-  return await users_collection.find_one({"_id": oid})
+  user = await users_collection.find_one({"_id": oid})
+  user["id"] = str(user["_id"])
+  del user["_id"]
+
+  return user
 
 async def create_user(first_name: str, last_name: str, email: str, password: str):
   user = {

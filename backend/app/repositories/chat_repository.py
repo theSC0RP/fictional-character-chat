@@ -3,6 +3,7 @@
 from datetime import datetime
 from typing import Optional, Dict, Any
 from app.db import chat_sessions
+from bson import ObjectId
 
 async def log_message(
   user_id: str,
@@ -44,7 +45,7 @@ async def get_character_chat_history(
   Uses aggregation to avoid pulling huge arrays.
   """
   pipeline = [
-    {"$match": {"user_id": user_id, "character_id": character_id}},
+    {"$match": {"user_id": ObjectId(user_id), "character_id": character_id}},
     {
       "$project": {
         "_id": 0,
@@ -58,7 +59,19 @@ async def get_character_chat_history(
   ]
   cursor = chat_sessions.aggregate(pipeline)
   docs = await cursor.to_list(length=1)
-  return docs[0] if docs else None
+
+  if not docs:
+    return None
+  
+  doc = docs[0]
+
+  # Convert ObjectIds to strings
+  if isinstance(doc.get("_id"), ObjectId):
+    doc["_id"] = str(doc["_id"])
+  if isinstance(doc.get("user_id"), ObjectId):
+    doc["user_id"] = str(doc["user_id"])
+
+  return doc
 
 async def clear_character_chat_history(
   user_id: str,
@@ -67,7 +80,7 @@ async def clear_character_chat_history(
   """
   Update the document to clear the messages for the character
   """
-  filter_doc = {"user_id": user_id, "character_id": character_id}
+  filter_doc = {"user_id": ObjectId(user_id), "character_id": character_id}
   update = {
     "$set": {
       "messages": [],

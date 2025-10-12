@@ -7,9 +7,11 @@ type IPublicRouteProps = {
 }
 export default function PublicRoute({ children }: IPublicRouteProps) {
   const { isAuthenticated } = useAuth();
-  console.log("isAuthenticated: ", isAuthenticated)
 
-  if (isAuthenticated) {
+  const isAuthPage =
+    location.pathname === "/sign-in" || location.pathname === "/sign-up"
+
+  if (isAuthenticated && isAuthPage) {
     return <Navigate to="/chat" replace />
   }
 

@@ -11,6 +11,8 @@ import { clearCharacterChatHistory } from "@/lib/api/chat";
 import { useCharactersContext } from "@/context/CharactersContext";
 import { useChatContext } from "@/context/ChatContext";
 import { AI_MODEL_KEY } from "@/lib/constants";
+import { Trash } from "lucide-react";
+import ClearChatButton from "./ClearChatButton";
 
 export default function ChatHeader({
   name,
@@ -42,9 +44,8 @@ export default function ChatHeader({
   const resetCharacterChat = async () => {
     if (selected) {
       const success = await clearCharacterChatHistory(selected.id);
-      console.log("In ChatHeader after API Call: ", success)
-      if (success)
-        setMessages([]);
+      console.log("In ChatHeader after API Call: ", success);
+      if (success) setMessages([]);
     }
   };
 
@@ -55,15 +56,16 @@ export default function ChatHeader({
           Chatting with <span className="font-semibold">{name}</span> from{" "}
           <span className="font-semibold">{universe}</span>
         </div>
-        <Button
+        {/* <Button
           variant="outline"
           className="ml-4 bg-transparent border-1 border-red-400 text-red-400 hover:text-red-500 hover:bg-transparent hover:border-red-600 cursor-pointer"
           onClick={() => {
             resetCharacterChat();
           }}
         >
-          Clear Chat
-        </Button>
+          <Trash /> Clear Chat
+        </Button> */}
+        <ClearChatButton resetCharacterChat={resetCharacterChat}/> 
       </div>
 
       <div className="flex items-center">
