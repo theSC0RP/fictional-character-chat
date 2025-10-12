@@ -17,7 +17,6 @@ async def websocket_chat(
   try:
     while True:
       payload = await ws.receive_json()
-      print(user)
       user_id = user.get("id") if user else None
       
       if not user_id:

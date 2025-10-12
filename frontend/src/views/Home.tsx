@@ -2,9 +2,10 @@ import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/lib/api/auth";
+import { LogIn, LogOut, MessageCirclePlus, UserPlus } from "lucide-react";
 
 export default function Home() {
-  const { isAuthenticated } = useAuth();
+  const { logout, isAuthenticated } = useAuth();
   console.log("is authenticated: ", isAuthenticated)
 
   return (
@@ -15,39 +16,36 @@ export default function Home() {
       </p>
       <div className="space-x-4">
         {!isAuthenticated ? (
-          <>
+          <div className="flex items-center">
             <Link
               to="/sign-in"
-              className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-medium"
+              className="flex items-center bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-medium"
             >
-              Sign In
+              <LogIn className="mr-2 h-5 w-5"/> Sign In
             </Link>
             <Link
               to="/sign-up"
-              className="border border-blue-600 hover:bg-blue-600 px-6 py-2 rounded-lg text-white font-medium"
+              className="flex items-center ml-8 border border-blue-600 hover:bg-blue-600 px-6 py-2 rounded-lg text-white font-medium"
             >
-              Sign Up
+              <UserPlus className="mr-2 h-5 w-5"/>Sign Up
             </Link>
-          </>
+          </div>
         ) : (
-          <>
+          <div className="flex items-center">
             <Link
               to="/chat"
-              className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-medium"
+              className="flex items-center bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-white font-medium"
             >
-              Start Chatting
+              <MessageCirclePlus className="mr-2 h-5 w-5"/> Start Chatting
             </Link>
             <Button
               variant="outline"
-              className="ml-4 bg-transparent border-1 border-red-400 text-red-400 hover:text-red-500 hover:bg-transparent hover:border-red-600 cursor-pointer"
-              onClick={() => {
-                const response = signOut();
-
-              }}
+              className="flex px-6 py-2 ml-8 h-[40px] bg-transparent border-1 border-red-400 text-red-400 hover:text-red-500 hover:bg-transparent hover:border-red-600 cursor-pointer"
+              onClick={logout}
             >
-              Log Out
+              <LogOut className="mr-2"/> Sign Out
             </Button>
-          </>
+          </div>
         )}
       </div>
     </div>

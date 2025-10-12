@@ -155,7 +155,7 @@ async def refresh_access_token(request: Request, response: Response):
 
   # Create a new access token with user info
   new_access_token = create_access_token({
-    "sub": str(user["_id"]),
+    "sub": user["id"],
     "email": user["email"],
     "first_name": user["first_name"],
     "last_name": user["last_name"]
